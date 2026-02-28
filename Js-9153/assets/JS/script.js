@@ -13,22 +13,18 @@ function addProduct(){
         const image = document.getElementById('p-image').value || 'https://www.crossword.in/cdn/shop/products/crosswordonline-toys-games-default-title-mirada-55cm-jumbo-teddy-bear-soft-toy-beige-40250340016345.jpg?v=1746619255';
         const category = document.getElementById('p-category').value;
 
-        // if(title || price == "") {
-        //     alert('Please provide at least a Title and Price!!');
-        //     return;
-        // }
-
-        if(editId) {
-            products = products.map(p => p/id === editId ? {...p, title, price, image, category} : p);
+        if(editId !== null) {
+            products = products.map(p => 
+                p.id === editId ? {...p, title, price, image, category} : p
+            );
             
-            editIt = null;
+            editId = null;
             document.getElementById('add-btn').innerText = "Add Product";
         } else {
             const newProduct = {
                 id: Date.now(),
                 title,
                 price,
-                // parseFloat(price),
                 image,
                 category: category || "Uncategorized"
             };
@@ -52,7 +48,7 @@ function dispalyProducts(data){
             <p>Category : ${product.category}</p>
             <div class="card-btns">
             <button class = "edit-btn" onclick="prepareEdit(${product.id})">Edit</button>
-            <button class = "delete-btn" onclick="deletProducts(${product.id})">Delete</button>
+            <button class = "delete-btn" onclick="deleteProducts(${product.id})">Delete</button>
             </div>
         </div>
         `;
@@ -86,7 +82,7 @@ function handleSort() {
 
 function handleFilter(){
     const cat = document.getElementById('filter-category').value;
-    const filtered = cat === 'all' ? prducts : products.filter(p => p.category === cat);
+    const filtered = cat === 'all' ? products : products.filter(p => p.category === cat);
     dispalyProducts(filtered);
 }
 
@@ -96,7 +92,7 @@ function saveAndRefresh() {
     updateCategoryFilter();
 }
 
-function claerInputs() {
+function clearInputs() {
     document.querySelectorAll('.input-group input').forEach(i => i.value = "");
 }
 
@@ -104,5 +100,7 @@ function updateCategoryFilter(){
     const filterSelect = document.getElementById('filter-category');
     const categories = ['all', ...new Set(products.map(p => p.category))];
 
-    filterSelect.innerHTML = categories.map (c => `<option value = "${c}">${c}</option>`.join(''));
+    filterSelect.innerHTML = categories
+        .map(c => `<option value="${c}">${c}</option>`)
+        .join('');
 }
